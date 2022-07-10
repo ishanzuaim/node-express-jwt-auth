@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const auth = require("./routes/auth");
 const cookieParser = require("cookie-parser");
-
+const { requireAuth } = require("./middleware/authMiddleware");
 dotenv.config();
 const app = express();
 
@@ -28,20 +28,5 @@ mongoose
 
 // routes
 app.get("/", (req, res) => res.render("home"));
-app.get("/smoothies", (req, res) => res.render("smoothies"));
+app.get("/smoothies", requireAuth, (req, res) => res.render("smoothies"));
 app.use(auth);
-
-app.get("/set-cookies", (req, res) => {
-  // res.setHeader("Set-Cookie", "newUser=true");
-
-  res.cookie("newUser", false);
-  res.cookie("isEmployee", true, { httpOnly: true });
-
-  res.send("cookie delivered");
-});
-
-app.get("/read-cookies", (req, res) => {
-  console.log(cookies);
-
-  res.json(cookies);
-});
